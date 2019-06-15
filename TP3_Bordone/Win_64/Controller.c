@@ -54,6 +54,9 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
             }
        }
     }
+    fclose(pFile);
+    free(pNode);
+    free(pEmpleado);
     return returnValue;
 }
 
@@ -175,6 +178,8 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
         printf("Empleado dado de alta!");
         getch();
     }
+    free(pNode);
+    free(pEmployee);
     printf("%d",ll_len(pArrayListEmployee));
     return returnValue;
 }
@@ -249,7 +254,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
                     ///MODIFICAR SUELDO
                      do{
                         ///MODIFICAR HORAS
-                        validate = getNum(&sueldoAux,"Ingrese nueva cantidad de horas", "Error: MAX 100.000",1,100000);
+                        validate = getNum(&sueldoAux,"Ingrese nuevo sueldo", "Error: MAX 100.000",1,100000);
                         printf("Confirmar sueldo nuevo?: %d",sueldoAux);
                         validate = getAB(&confirm,"[S/N", "Input invalido: [S/N]",'S','N');
                     }while(validate == 1 || confirm == 'N');
@@ -264,6 +269,8 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
         getch();
         }
     }
+
+    free(pEmployee);
     return returnValue;
 }
 /** \brief Baja de empleado
@@ -309,7 +316,7 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
         getch();
 
     }
-
+    free(pEmployee);
     return returnValue;
 }
 
@@ -347,6 +354,8 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
             }
         }
     }
+    free(pEmployee);
+    free(pNode);
     getch();
     return returnValue;
 }
@@ -369,17 +378,14 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
 
     int length,i,j;
     length = ll_len(pArrayListEmployee);
-    printf("%d",length);
-    getch();
     pNodeI = pArrayListEmployee->pFirstNode;
     Node* pNextNodeJ;
     Node* pNextNodeI;
-    int contador = 0;
+
+    system("cls");
 
     if(pArrayListEmployee!=NULL){
             for(i=0;i<length-1;i++){
-                contador++;
-                printf("%d\n",contador);
                 pNextNodeI = pNodeI->pNextNode;
                 pEmployeeI = pNodeI->pElement;
                 pNodeJ = pNextNodeI;
@@ -401,7 +407,20 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
                 }
                 pNodeI = pNextNodeI;
             }
+            printf("Usuarios ordenados alfabeticamente");
+            getch();
         }
+        if(pArrayListEmployee == NULL){
+            printf("Puntero de lista apunta a NULL, imposible ordenar");
+            getch();
+        }
+        free(pEmployeeI);
+        free(pEmployeeJ);
+        free(pNodeI);
+        free(pNodeAux);
+        free(pNodeJ);
+        free(pNextNodeI);
+        free(pNextNodeJ);
         return 1;
 }
 
@@ -424,7 +443,8 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
     pNode = pArrayListEmployee->pFirstNode;
     pFile = fopen(path,"r");
     if(pFile == NULL){
-        printf("Error!!!!");
+        printf("Error! Puntero archivo a  NULL, imposible guardar");
+        getch();
     }
     if(pFile != NULL){
         pFile = fopen(path,"w");
@@ -451,6 +471,7 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
             }
     }
     }
+    free(pEmployee);
     fclose(pFile);
     return 1;
 }
@@ -475,12 +496,17 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 
     pNode = pArrayListEmployee->pFirstNode;
 
+
     pFile = fopen(path,"rb");
     if(pFile != NULL){
         pFile = fopen(path,"wb");
     }
-    rewind(pFile);
+    if(pFile == NULL){
+        printf("Error! Puntero archivo a  NULL, imposible guardar");
+        getch();
+    }
 
+    rewind(pFile);
     if(pFile != NULL){
         for(i=0;i<cant;i++){
             pEmployee = pNode->pElement;
@@ -491,6 +517,10 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
             pNode = pNextNode;
         }
     }
+
+    free(pNode);
+    free(pNextNode);
+    free(pEmployee);
     fclose(pFile);
 
 
@@ -513,6 +543,8 @@ int controller_searchID(LinkedList* pArrayListEmployee, int id2Search){
             pNode=pNode->pNextNode;
         }
     }
+    free(pEmployee);
+    free(pNode);
     return returnValue;
 }
 
